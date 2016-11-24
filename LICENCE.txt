@@ -1,0 +1,13 @@
+This work is Copyright (C) 2016 Kingsley Turner, krt@krt.com.au
+
+You are hereby permitted to re-use this code as per a 
+"Attribution-NonCommercial-Share Alike" licence.  This means
+you are licensed to:
+
+   Distribute, remix and build upon the work, but only 
+   if it is for non-commercial purposes, and must credit the 
+   original creator and license any derivative works under 
+   the same terms.
+
+Ref: https://creativecommons.org/licenses/by-nc-sa/3.0/au/
+

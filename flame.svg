@@ -1,0 +1,11 @@
+<svg width="50" height="100">
+<polyline points="11,40  6,39  3,37  1,33  0,29  0,25   2,20  5,16 
+                  9,13  10,11 11,8  11,6  10,3   7,0, 13,5  16,9 
+                  20,13 23,17 25,22 26,26 26,29 26,33  23,36 21,38 
+                  18,40"
+  style="fill:none;stroke:yellow;stroke-width:1" />
+
+<polyline points="11,40  9,38  8,36  7,34  8,30  9,28 12,26 14,25, 
+                  15,23 17,26 18,29 19,33 18,36 17,39 16,40 11,40"
+style="fill:none;stroke:red;stroke-width:1" />
+</svg>
