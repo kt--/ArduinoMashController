@@ -10,6 +10,7 @@ Source: https://www.milesburton.com/Dallas_Temperature_Control_Library
 
 Rotary Encoder:
 Source: http://www.pjrc.com/teensy/td_libs_Encoder.html
+I changed the direction of the encoder, so clockwise=+ anticlockwise=-
 
 PID Library:
 Source: http://playground.arduino.cc/Code/PIDLibrary
