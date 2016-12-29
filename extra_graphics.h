@@ -25,15 +25,20 @@
 
 /*
 
-ADDED INTO THE PDQ_GFX LIBRARY SINCE BECAUSE IT's DONE AS A C++ Template Class, it because problematic to add them here.
-                                               
+THESE MUST BE ADDED INTO THE PDQ_GFX LIBRARY SINCE BECAUSE IT's DONE AS A C++ Template Class, it's not possible to just define them here.
+Do not uncomment this code.
+    
+////    
+//// Add these definitions into the PDQ_GFX.h PDQ_GFX class definition "public" section
+////
 
     static void drawFourEllipsePixels(coord_t x_centre, coord_t y_centre, int x, int y, color_t colour);
     static void drawEllipse(coord_t x_centre, coord_t y_centre, coord_t width, coord_t height, color_t colour);
     static void draw16bitBitmap(coord_t corner_x, coord_t corner_y, int width, int height, unsigned short *pixel_data);
 
-
-// Added by KT -
+////
+//// Add these function bodies into PDQ_GFX.h anywhere with the other function bodies.
+////
 
 // Paint an XxY 16-bit colour bitmap to the screen.
 // So <pixel_data> is just a long list of 16-bit colour values
