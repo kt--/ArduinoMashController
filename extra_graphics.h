@@ -6,6 +6,15 @@
 #ifndef __EXTRA_GRAPHICS_H__
 #define __EXTRA_GRAPHICS_H__
 
+// NOTE: The code below needs to be mered into the PDQ_GFX library;
+//       specifically into the PDQ_GFX.h file.  This code will not
+//       work as-is.
+//
+//       The three function definitions need to be plaed in the 
+//       PDQ_GFX class public section, and the function bodies can
+//       be placed anywhere along with the other functions in
+//       that same file.
+//
 
 /*
 #include <stdint.h>
