@@ -7,8 +7,8 @@
 #define __EXTRA_GRAPHICS_H__
 
 // NOTE: The code below needs to be mered into the PDQ_GFX library;
-//       specifically into the PDQ_GFX.h file.  This code will not
-//       work as-is.
+//       specifically into the PDQ_GFX.h file.  This code is not designed
+//       work as-is (because it can't).
 //
 //       The three function definitions need to be plaed in the 
 //       PDQ_GFX class public section, and the function bodies can
