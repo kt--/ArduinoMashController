@@ -42,15 +42,15 @@ PDQ_ILI9341 tft;      // PDQ: create LCD object (using pins in "PDQ_ILI9341_conf
 Encoder encoder(ENCODER_PIN_A, ENCODER_PIN_B);
 
 // These are the readings from the sensors
-char hlt_start_timestamp[17] = { 'now\0\0\0\0\0\0\0\0\0\0\0\0\0' };
- float hlt_temperature      = 999.0;
- float mash_temperature     = 999.0;
- float panel_temperature    = 999.0;
- float mash_set_temperature = 0.00;  // off
- float hlt_set_temperature  = 75.50;
- float hlt_calibration      = 0.0;   // used to adjust sensor
- float mash_calibration     = 0.0;
- float panel_calibration    = 0.0;
+char hlt_start_timestamp[17] = { 'n', 'o', 'w', '\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0','\0' };
+float hlt_temperature      = 999.0;
+float mash_temperature     = 999.0;
+float panel_temperature    = 999.0;
+float mash_set_temperature = 0.00;  // off
+float hlt_set_temperature  = 75.50;
+float hlt_calibration      = 0.0;   // used to adjust sensor
+float mash_calibration     = 0.0;
+float panel_calibration    = 0.0;
 #define TEMPERATURE_MAX       100.0
 #define TEMPERATURE_MIN         0.0
 #define TEMPERATURE_DEFAULT    74.5
@@ -75,11 +75,11 @@ DeviceAddress mash_sensor_address  = { 0x28, 0x66, 0x46, 0xCA, 0x03, 0x00, 0x00,
 DeviceAddress panel_sensor_address = { 0x28, 0xB5, 0x3A, 0xB3, 0x06, 0x00, 0x00, 0x03 };
 
 // these are the last readings written to the screen (big numbers to ensure that first screen-update)
- float last_hlt_temperature      = 999.0;
- float last_mash_temperature     = 999.0;
- float last_panel_temperature    = 999.0;
- float last_mash_set_temperature = 999.0;
- float last_hlt_set_temperature  = 999.0;
+float last_hlt_temperature      = 999.0;
+float last_mash_temperature     = 999.0;
+float last_panel_temperature    = 999.0;
+float last_mash_set_temperature = 999.0;
+float last_hlt_set_temperature  = 999.0;
 #define TEMP_REQUEST_TIMEOUT 8000
 unsigned long last_read_hlt_temp = 0;
 unsigned long last_read_mash_temp = 0;
@@ -117,8 +117,8 @@ float Kp_mash = 500.0;    //500; //2;
 float Ki_mash =   0.0;      //5;
 float Kd_mash =   0.45;   //0.1; //2;
 PID mash_pid(&pid_mash_input, &pid_mash_output, &pid_mash_setpoint, Kp_mash,Ki_mash,Kd_mash, DIRECT);
- unsigned int last_hlt_heater_state = 2;
- unsigned int last_mash_heater_state = 2;
+unsigned int last_hlt_heater_state = 2;
+unsigned int last_mash_heater_state = 2;
 
 
 
