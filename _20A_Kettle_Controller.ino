@@ -54,6 +54,7 @@ float panel_calibration    = 0.0;
 #define TEMPERATURE_MAX       100.0
 #define TEMPERATURE_MIN         0.0
 #define TEMPERATURE_DEFAULT    74.5
+#define TEMPERATURE_ALARM      50.0  // Don't forget to change alarm string too
 
 
 
@@ -77,7 +78,7 @@ DeviceAddress panel_sensor_address = { 0x28, 0xB5, 0x3A, 0xB3, 0x06, 0x00, 0x00,
 // these are the last readings written to the screen (big numbers to ensure that first screen-update)
 float last_hlt_temperature      = 999.0;
 float last_mash_temperature     = 999.0;
-float last_panel_temperature    = 999.0;
+float last_panel_temperature    = 0.0;
 float last_mash_set_temperature = 999.0;
 float last_hlt_set_temperature  = 999.0;
 #define TEMP_REQUEST_TIMEOUT 8000
@@ -94,7 +95,7 @@ float         step_temp[4] = { 0.0, 0.0, 0.0, 0.0 };
 // PID Controlled Relay On/Off
 #include <PID_v1.h>
 #define HLT_RELAY_PIN       6
-#define MASH_RELAY_PIN        5
+#define MASH_RELAY_PIN      5
 #define HEATER_RELAY_ON     1
 #define HEATER_RELAY_OFF    0
 boolean can_use_heaters = false;  // Don't turn the heaters on unless told to
@@ -103,19 +104,23 @@ double pid_mash_input, pid_mash_setpoint, pid_mash_output;
 #define HEATER_WINDOW_SIZE 5000 // milliseconds
 unsigned long heater_hlt_window_start_time = 0;
 unsigned long heater_mash_window_start_time = 0;
+
 // The Proportional constant relates the error (100-16) to the output.  
 // I think if you want the heater full on if the temperature is 10 degrees low you probably want a P parameter of 500 instead of 2.
 // The Integral constant is saving you some.  It adds up the errors over time to eliminate offset.  If the output is not responding fast enough this boosts the output.
 // The Differential only takes action when the error value starts changing.  It's there to try to keep the temperature from overshooting.
 // (500,0,0.45) works well, but creeps very slowly to target (never going over)
-float Kp_hlt = 500.0;    //500; //2;
-float Ki_hlt =   0.0;      //5;
-float Kd_hlt =   0.45;   //0.1; //2;
+
+// Update 2017-04-02 - Use 600,0,0 based on http://aussiehomebrewer.com/topic/93940-ahb-wiki-pid-tuning/page-2#entry1439233 (with 1800 watt element)
+
+double Kp_hlt = 600.0;    // 500.0; //500; //2;
+double Ki_hlt =   0.0;    // 0.00;  //5;
+double Kd_hlt =   0.0;    // 0.45;  //0.1; //2;
 PID hlt_pid(&pid_hlt_input, &pid_hlt_output, &pid_hlt_setpoint, Kp_hlt,Ki_hlt,Kd_hlt, DIRECT);
 
-float Kp_mash = 500.0;    //500; //2;
-float Ki_mash =   0.0;      //5;
-float Kd_mash =   0.45;   //0.1; //2;
+double Kp_mash = 600.0;    //500; //2;
+double Ki_mash =   0.0;    //5;
+double Kd_mash =   0.0;   // 0.45; //0.1; //2;
 PID mash_pid(&pid_mash_input, &pid_mash_output, &pid_mash_setpoint, Kp_mash,Ki_mash,Kd_mash, DIRECT);
 unsigned int last_hlt_heater_state = 2;
 unsigned int last_mash_heater_state = 2;
@@ -308,7 +313,7 @@ int current_screen = 0;
 
 
 // Clock
-// The citcuit has a DS3231 battery-backed clock to maintain the
+// The circuit has a DS3231 battery-backed clock to maintain the
 // clock during power-off.  The clock values are used for delayed
 // starting of the water heater (HLT).
 DS3231Clock real_time_clock;
@@ -336,14 +341,14 @@ void setup()
     hlt_pid.SetOutputLimits(0, HEATER_WINDOW_SIZE);
     hlt_pid.SetMode(AUTOMATIC);
     pinMode(HLT_RELAY_PIN, OUTPUT);
-    digitalWrite(HLT_RELAY_PIN,HEATER_RELAY_OFF);  // turn it off (Relay is avtive *LOW*)
+    digitalWrite(HLT_RELAY_PIN,HEATER_RELAY_OFF);  // turn it off (Relay is active *LOW*)
 
     heater_mash_window_start_time = millis();
     pid_mash_setpoint = (double)TEMPERATURE_DEFAULT;
     mash_pid.SetOutputLimits(0, HEATER_WINDOW_SIZE);
     mash_pid.SetMode(AUTOMATIC);
     pinMode(MASH_RELAY_PIN, OUTPUT);
-    digitalWrite(MASH_RELAY_PIN, HEATER_RELAY_OFF);  // turn it off (Relay is avtive *LOW*)
+    digitalWrite(MASH_RELAY_PIN, HEATER_RELAY_OFF);  // turn it off (Relay is active *LOW*)
  
     // DO the little LCD Screen
     resetTFT();  
@@ -1134,7 +1139,7 @@ void loop()
         // We only draw the temperatures when they appear to have changed otherwise
         last_hlt_temperature      = 999.0;
         last_mash_temperature     = 999.0;
-        last_panel_temperature    = 999.0;
+        last_panel_temperature    = 0.0;
         last_hlt_set_temperature  = 999.0;
         last_mash_set_temperature = 999.0;
 
@@ -1281,7 +1286,7 @@ void loop()
 
     // Is the panel overheating?  if so, paint a warning
     // Geeze, we should probably have a buzzer that sounds too
-    if (panel_temperature > 50.0)
+    if (panel_temperature > TEMPERATURE_ALARM)
     {
         if (last_panel_temperature != panel_temperature)
         {
@@ -1291,6 +1296,11 @@ void loop()
         paintLabel(STR_PANEL_WARN, 80, 0, TEXT_NORMAL, ILI9341_RED);
         printNumberTFT(&tft, 90, 20, TEXT_HUGE, panel_temperature);
         last_panel_temperature = panel_temperature;
+    }
+    else if (last_panel_temperature > TEMPERATURE_ALARM && panel_temperature <= TEMPERATURE_ALARM)  // Had alarm, but now it's A-OK
+    {
+        // need to remove the alarm from the screen
+        needs_background_repaint = true;
     }
         
     
@@ -1547,7 +1557,7 @@ void loop()
                 case FOCUS_SUBMENU_MASH_STEP2_TEMP:
                 case FOCUS_SUBMENU_MASH_STEP3_TIME:
                 case FOCUS_SUBMENU_MASH_STEP3_TEMP:
-        	case FOCUS_SUBMENU_MASH_STEP4_TIME:
+          case FOCUS_SUBMENU_MASH_STEP4_TIME:
                 case FOCUS_SUBMENU_MASH_STEP4_TEMP:
                     encoder.write(2+ (5 * (control_focus-FOCUS_SUBMENU_MASH_SETTEMP)));  // reposition encoder to focus exit point
                     control_focus = FOCUS_SUBMENU_MASH;
@@ -1581,3 +1591,4 @@ void loop()
 
 // That's it, stop reading now.
 // Maybe preuse some of the support files
+
