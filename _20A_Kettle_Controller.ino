@@ -51,6 +51,7 @@ float hlt_set_temperature  = 75.50;
 float hlt_calibration      = 0.0;   // used to adjust sensor
 float mash_calibration     = 0.0;
 float panel_calibration    = 0.0;
+
 #define TEMPERATURE_MAX       100.0
 #define TEMPERATURE_MIN         0.0
 #define TEMPERATURE_DEFAULT    74.5
@@ -82,9 +83,9 @@ float last_panel_temperature    = 0.0;
 float last_mash_set_temperature = 999.0;
 float last_hlt_set_temperature  = 999.0;
 #define TEMP_REQUEST_TIMEOUT 8000
-unsigned long last_read_hlt_temp = 0;
-unsigned long last_read_mash_temp = 0;
-unsigned long last_read_panel_temp = 0;
+unsigned long last_read_hlt_temp      = 0;
+unsigned long last_read_mash_temp     = 0;
+unsigned long last_read_panel_temp    = 0;
 unsigned long last_paint_heater_state = 0;
 // Step mash timings and temperatures
 unsigned long step_mash_run_start_time = 0;
@@ -99,10 +100,10 @@ float         step_temp[4] = { 0.0, 0.0, 0.0, 0.0 };
 #define HEATER_RELAY_ON     1
 #define HEATER_RELAY_OFF    0
 boolean can_use_heaters = false;  // Don't turn the heaters on unless told to
-double pid_hlt_input, pid_hlt_setpoint, pid_hlt_output;
+double pid_hlt_input,  pid_hlt_setpoint,  pid_hlt_output;
 double pid_mash_input, pid_mash_setpoint, pid_mash_output;
 #define HEATER_WINDOW_SIZE 5000 // milliseconds
-unsigned long heater_hlt_window_start_time = 0;
+unsigned long heater_hlt_window_start_time  = 0;
 unsigned long heater_mash_window_start_time = 0;
 
 // The Proportional constant relates the error (100-16) to the output.  
